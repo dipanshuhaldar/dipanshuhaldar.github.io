@@ -124,7 +124,7 @@
     aspect-ratio:1/1;
     overflow:hidden;
   }
-  .graph-box canvas{display:block; width:100%; height:100%;}
+  .graph-box canvas{display:block; width:100%; height:100%; cursor:pointer;}
   .graph-caption{
     position:absolute; bottom:0; left:0; right:0;
     padding:10px 14px;
@@ -132,6 +132,55 @@
     color:var(--muted);
     background:linear-gradient(to top, var(--ink-2) 40%, transparent);
     letter-spacing:.03em;
+  }
+
+  /* ---------- NODE MODAL ---------- */
+  .node-modal-backdrop{
+    position:fixed; inset:0; z-index:100;
+    background:rgba(10,12,16,0.7);
+    backdrop-filter:blur(3px);
+    display:none;
+    align-items:center; justify-content:center;
+    padding:24px;
+  }
+  .node-modal-backdrop.open{display:flex;}
+  .node-modal{
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:32px;
+    max-width:340px; width:100%;
+    text-align:center;
+    position:relative;
+    animation:modalIn .18s ease;
+  }
+  @keyframes modalIn{
+    from{opacity:0; transform:scale(0.96);}
+    to{opacity:1; transform:scale(1);}
+  }
+  .node-modal-close{
+    position:absolute; top:12px; right:14px;
+    background:none; border:none; color:var(--muted);
+    font-size:20px; cursor:pointer; line-height:1;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .node-modal-close:hover{color:var(--paper);}
+  .node-modal-logo{
+    width:96px; height:96px; border-radius:50%;
+    margin:0 auto 18px;
+    display:flex; align-items:center; justify-content:center;
+    border:2px solid var(--teal);
+    overflow:hidden;
+    background:var(--ink-3);
+  }
+  .node-modal-logo.current{border-color:var(--gold);}
+  .node-modal-logo img{width:100%; height:100%; object-fit:cover;}
+  .node-modal h3{font-size:22px; color:var(--paper); margin-bottom:6px;}
+  .node-modal .modal-role{
+    font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--teal); margin-bottom:4px;
+  }
+  .node-modal .modal-dates{
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted);
   }
 
   /* ---------- SECTION SHARED ---------- */
@@ -249,9 +298,21 @@
     </div>
     <div class="graph-box">
       <canvas id="careerGraph"></canvas>
-      <div class="graph-caption">career_graph.render() — nodes sized by tenure</div>
+      <div class="graph-caption">career_graph.render() — click a node to expand</div>
     </div>
   </section>
+
+  <div class="node-modal-backdrop" id="nodeModalBackdrop">
+    <div class="node-modal">
+      <button class="node-modal-close" id="nodeModalClose" aria-label="Close">✕</button>
+      <div class="node-modal-logo" id="nodeModalLogoWrap">
+        <img id="nodeModalLogoImg" src="" alt="">
+      </div>
+      <h3 id="nodeModalTitle"></h3>
+      <div class="modal-role" id="nodeModalRole"></div>
+      <div class="modal-dates" id="nodeModalDates"></div>
+    </div>
+  </div>
 
   <!-- WHAT I BUILD -->
   <section id="work-intro">
@@ -438,12 +499,18 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const roles = [
-    {label:'Aaum',        months:8,  current:false, logo:'assets/logos/aaum.png'},
-    {label:'HDFC',        months:4,  current:false, logo:'assets/logos/hdfc.png'},
-    {label:'Inside View', months:16, current:false, logo:'assets/logos/insideview.png'},
-    {label:'DBS',         months:25, current:false, logo:'assets/logos/dbs.png'},
-    {label:'Datametica',  months:18, current:false, logo:'assets/logos/datametica.png'},
-    {label:'EA',          months:75, current:true,  logo:'assets/logos/ea.png'},
+    {label:'Aaum',        months:8,  current:false, logo:'assets/logos/aaum.png',
+     role:'Data Scientist', dates:'Mar 2014 — Nov 2014'},
+    {label:'HDFC',        months:4,  current:false, logo:'assets/logos/hdfc.png',
+     role:'Deputy Manager, Business Intelligence', dates:'Nov 2014 — Mar 2015'},
+    {label:'Inside View', months:16, current:false, logo:'assets/logos/insideview.png',
+     role:'Data Analyst', dates:'Mar 2015 — Jul 2016'},
+    {label:'DBS',         months:25, current:false, logo:'assets/logos/dbs.png',
+     role:'Lead Engineer, Data Science', dates:'Jul 2016 — Aug 2018'},
+    {label:'Datametica',  months:18, current:false, logo:'assets/logos/datametica.png',
+     role:'Senior Data Scientist', dates:'Aug 2018 — Feb 2020'},
+    {label:'EA',          months:75, current:true,  logo:'assets/logos/ea.png',
+     role:'Senior Data Scientist', dates:'May 2020 — Present'},
   ];
 
   // Preload logos; each node falls back to a colored dot if its file is missing.
@@ -553,6 +620,75 @@
   layout();
   draw();
   window.addEventListener('resize', () => { layout(); if(reduceMotion) draw(); });
+
+  // ---------- Click-to-expand ----------
+  const modalBackdrop = document.getElementById('nodeModalBackdrop');
+  const modalLogoWrap = document.getElementById('nodeModalLogoWrap');
+  const modalLogoImg = document.getElementById('nodeModalLogoImg');
+  const modalTitle = document.getElementById('nodeModalTitle');
+  const modalRole = document.getElementById('nodeModalRole');
+  const modalDates = document.getElementById('nodeModalDates');
+  const modalClose = document.getElementById('nodeModalClose');
+
+  function openModalForNode(n){
+    modalTitle.textContent = n.role.label;
+    modalRole.textContent = n.role.role;
+    modalDates.textContent = n.role.dates;
+    modalLogoWrap.classList.toggle('current', !!n.role.current);
+    if(n.role.imgOk && n.role.img){
+      modalLogoImg.src = n.role.logo;
+      modalLogoImg.style.display = 'block';
+      modalLogoWrap.style.background = 'var(--ink-3)';
+    } else {
+      modalLogoImg.style.display = 'none';
+      modalLogoWrap.style.background = n.role.current ? 'var(--gold)' : 'var(--teal)';
+    }
+    modalBackdrop.classList.add('open');
+  }
+
+  function closeModal(){
+    modalBackdrop.classList.remove('open');
+  }
+
+  modalClose.addEventListener('click', closeModal);
+  modalBackdrop.addEventListener('click', (e) => {
+    if(e.target === modalBackdrop) closeModal();
+  });
+  window.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') closeModal();
+  });
+
+  function getNodeAtPoint(clientX, clientY){
+    const rect = canvas.getBoundingClientRect();
+    const x = (clientX - rect.left) * devicePixelRatio;
+    const y = (clientY - rect.top) * devicePixelRatio;
+    // hit radius padded a bit larger than the visual dot for easier tapping
+    for(const n of nodes){
+      const hitR = Math.max(n.r * devicePixelRatio * 0.5, 14 * devicePixelRatio);
+      const dx = x - n.x, dy = y - n.y;
+      if(dx*dx + dy*dy <= hitR*hitR) return n;
+    }
+    return null;
+  }
+
+  canvas.addEventListener('click', (e) => {
+    const n = getNodeAtPoint(e.clientX, e.clientY);
+    if(n) openModalForNode(n);
+  });
+
+  canvas.addEventListener('mousemove', (e) => {
+    const n = getNodeAtPoint(e.clientX, e.clientY);
+    canvas.style.cursor = n ? 'pointer' : 'default';
+  });
+
+  // touch support
+  canvas.addEventListener('touchend', (e) => {
+    if(e.changedTouches && e.changedTouches[0]){
+      const t = e.changedTouches[0];
+      const n = getNodeAtPoint(t.clientX, t.clientY);
+      if(n){ e.preventDefault(); openModalForNode(n); }
+    }
+  });
 })();
 </script>
 
