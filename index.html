@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dipanshu Haldar — Senior Data Scientist</title>
+<meta name="description" content="Senior Data Scientist at Electronic Arts. Graph ML, causal inference, and applied ML for player behavior at scale.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12151C;
+    --ink-2:#1A1E27;
+    --ink-3:#20242F;
+    --paper:#ECE8DE;
+    --muted:#9AA0AC;
+    --gold:#D9A441;
+    --teal:#4FA8A0;
+    --line:#2A2F3A;
+    --max:1100px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Inter', sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  ::selection{background:var(--gold); color:var(--ink);}
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:3px;
+  }
+
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 28px;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--teal);
+  }
+  h1,h2,h3{font-family:'Newsreader', serif; font-weight:500; letter-spacing:-0.01em;}
+  em{font-style:italic; color:var(--gold); font-weight:500;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(18,21,28,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:var(--max); margin:0 auto; padding:16px 28px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .nav-logo{
+    font-family:'JetBrains Mono', monospace; font-size:14px; font-weight:500;
+    color:var(--paper);
+  }
+  .nav-logo span{color:var(--gold);}
+  .nav-links{display:flex; gap:28px; list-style:none;}
+  .nav-links a{
+    font-size:13.5px; color:var(--muted); text-decoration:none;
+    transition:color .15s ease;
+  }
+  .nav-links a:hover{color:var(--paper);}
+  .nav-cta{
+    font-family:'JetBrains Mono', monospace; font-size:12.5px;
+    color:var(--ink); background:var(--gold);
+    padding:8px 14px; border-radius:3px; text-decoration:none;
+    white-space:nowrap;
+  }
+  .nav-mobile-hide{display:flex;}
+  @media (max-width:720px){ .nav-mobile-hide{display:none;} }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:88px 0 64px;
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:48px; align-items:center;
+  }
+  @media (max-width:900px){ .hero{grid-template-columns:1fr; padding:56px 0 40px;} }
+
+  .hero h1{
+    font-size:clamp(32px, 4.6vw, 50px);
+    line-height:1.14;
+    margin:16px 0 22px;
+    color:var(--paper);
+  }
+  .hero p.lead{
+    color:var(--muted); font-size:17px; max-width:46ch; margin-bottom:30px;
+  }
+  .hero-actions{display:flex; flex-wrap:wrap; gap:12px;}
+  .btn{
+    font-family:'JetBrains Mono', monospace; font-size:13px;
+    padding:11px 18px; border-radius:3px; text-decoration:none;
+    border:1px solid var(--line);
+    display:inline-flex; align-items:center; gap:8px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .btn-primary{background:var(--gold); color:var(--ink); border-color:var(--gold); font-weight:500;}
+  .btn-primary:hover{background:#e6b45c;}
+  .btn-ghost{color:var(--paper);}
+  .btn-ghost:hover{border-color:var(--teal); color:var(--teal);}
+
+  .graph-box{
+    position:relative;
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-radius:6px;
+    aspect-ratio:1/1;
+    overflow:hidden;
+  }
+  .graph-box canvas{display:block; width:100%; height:100%;}
+  .graph-caption{
+    position:absolute; bottom:0; left:0; right:0;
+    padding:10px 14px;
+    font-family:'JetBrains Mono', monospace; font-size:11px;
+    color:var(--muted);
+    background:linear-gradient(to top, var(--ink-2) 40%, transparent);
+    letter-spacing:.03em;
+  }
+
+  /* ---------- SECTION SHARED ---------- */
+  section{padding:64px 0; border-top:1px solid var(--line);}
+  .section-head{margin-bottom:36px;}
+  .section-head h2{font-size:28px; color:var(--paper);}
+  .section-head p{color:var(--muted); font-size:14.5px; margin-top:8px; max-width:60ch;}
+
+  /* ---------- WHAT I BUILD ---------- */
+  .build-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden;}
+  @media (max-width:800px){ .build-grid{grid-template-columns:1fr;} }
+  .build-card{background:var(--ink-2); padding:28px;}
+  .build-card .num{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--teal); margin-bottom:14px; display:block;}
+  .build-card h3{font-size:19px; color:var(--paper); margin-bottom:10px; font-weight:500;}
+  .build-card p{color:var(--muted); font-size:14px; margin-bottom:14px;}
+  .build-card ul{list-style:none; font-size:13px; color:var(--paper); font-family:'JetBrains Mono', monospace;}
+  .build-card li{padding:3px 0; opacity:.85;}
+  .build-card li::before{content:"· "; color:var(--gold);}
+
+  /* ---------- TIMELINE ---------- */
+  .timeline{position:relative; padding-left:28px; border-left:1px solid var(--line);}
+  .tl-item{position:relative; padding-bottom:34px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-dot{
+    position:absolute; left:-33px; top:4px;
+    width:9px; height:9px; border-radius:50%;
+    background:var(--ink); border:2px solid var(--muted);
+  }
+  .tl-item.current .tl-dot{background:var(--gold); border-color:var(--gold);}
+  .tl-head{
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:10px 16px; margin-bottom:6px;
+  }
+  .tl-head h3{font-size:18px; color:var(--paper); font-weight:500;}
+  .tl-role{color:var(--teal); font-size:14px; font-family:'JetBrains Mono', monospace;}
+  .tl-date{
+    margin-left:auto; font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted);
+  }
+  .tl-item p{color:var(--muted); font-size:14.5px; max-width:64ch;}
+
+  /* ---------- EXPLORING ---------- */
+  .chip-row{display:flex; flex-wrap:wrap; gap:10px;}
+  .chip{
+    font-family:'JetBrains Mono', monospace; font-size:13px;
+    border:1px dashed var(--line); color:var(--paper);
+    padding:8px 14px; border-radius:20px;
+  }
+  .exploring-note{
+    color:var(--muted); font-size:13.5px; margin-top:20px;
+    border-left:2px solid var(--teal); padding-left:14px;
+  }
+
+  /* ---------- SKILLS ---------- */
+  .skills-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:22px 40px;}
+  @media (max-width:700px){ .skills-grid{grid-template-columns:1fr;} }
+  .skill-group h4{
+    font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:.06em;
+    color:var(--gold); text-transform:uppercase; margin-bottom:10px;
+  }
+  .skill-group p{color:var(--muted); font-size:14px;}
+
+  /* ---------- FOOTER ---------- */
+  footer{padding:56px 0 40px; border-top:1px solid var(--line);}
+  .footer-grid{display:flex; flex-wrap:wrap; justify-content:space-between; gap:24px; align-items:flex-end;}
+  footer h2{font-size:26px; margin-bottom:10px;}
+  footer p{color:var(--muted); font-size:14.5px;}
+  .footer-links{display:flex; gap:22px; flex-wrap:wrap;}
+  .footer-links a{
+    font-family:'JetBrains Mono', monospace; font-size:13px; text-decoration:none;
+    color:var(--paper); border-bottom:1px solid var(--line); padding-bottom:2px;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .footer-links a:hover{color:var(--gold); border-color:var(--gold);}
+  .footer-bottom{
+    margin-top:40px; padding-top:20px; border-top:1px solid var(--line);
+    font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--muted);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">DH<span>.</span></div>
+    <ul class="nav-links nav-mobile-hide">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#exploring">Exploring</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a class="nav-cta" href="Dipanshu_Haldar_Resume.pdf" download>Résumé ↓</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- HERO -->
+  <section class="hero" style="border-top:none;">
+    <div>
+      <span class="eyebrow">Senior Data Scientist · Electronic Arts</span>
+      <h1>I turn player behavior into <em>graphs</em>, causal models, and decisions that ship.</h1>
+      <p class="lead">12+ years across banking, adtech, and gaming — currently building graph ML and causal inference systems used across EA's player base. Hyderabad, India.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="Dipanshu_Haldar_Resume.pdf" download>Download Résumé</a>
+        <a class="btn btn-ghost" href="mailto:dipanshuhaldar@gmail.com">Email</a>
+        <a class="btn btn-ghost" href="https://linkedin.com/in/dipanshu-haldar-5639885b" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn btn-ghost" href="https://github.com/dipanshuhaldar" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="graph-box">
+      <canvas id="careerGraph"></canvas>
+      <div class="graph-caption">career_graph.render() — nodes sized by tenure</div>
+    </div>
+  </section>
+
+  <!-- WHAT I BUILD -->
+  <section id="work-intro">
+    <div class="section-head">
+      <h2>What I build</h2>
+      <p>Three areas I keep coming back to — each shipped in production, not just prototyped.</p>
+    </div>
+    <div class="build-grid">
+      <div class="build-card">
+        <span class="num">01</span>
+        <h3>Graph ML</h3>
+        <p>Modeling players as networks, not rows.</p>
+        <ul>
+          <li>PyTorch Geometric</li>
+          <li>Node2Vec embeddings</li>
+          <li>Link prediction · AUC 0.70–0.74</li>
+        </ul>
+      </div>
+      <div class="build-card">
+        <span class="num">02</span>
+        <h3>Causal Inference &amp; Forecasting</h3>
+        <p>Separating real lift from noise before it hits a roadmap.</p>
+        <ul>
+          <li>Difference-in-Differences</li>
+          <li>Causal Impact · Marketing Mix Models</li>
+          <li>Temporal Fusion Transformer</li>
+        </ul>
+      </div>
+      <div class="build-card">
+        <span class="num">03</span>
+        <h3>NLP &amp; Trust/Safety</h3>
+        <p>Keeping games livable at scale.</p>
+        <ul>
+          <li>Transformers (Hugging Face, BERT)</li>
+          <li>Toxicity detection, production</li>
+          <li>Account-takeover ML · SageMaker</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="work">
+    <div class="section-head">
+      <h2>Experience</h2>
+      <p>11+ years, chronological — banking, B2B intelligence, and gaming.</p>
+    </div>
+    <div class="timeline">
+
+      <div class="tl-item current">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <h3>Electronic Arts</h3>
+          <span class="tl-role">Senior Data Scientist</span>
+          <span class="tl-date">May 2020 — Present</span>
+        </div>
+        <p>Graph neural networks for player-network analysis, causal inference for growth strategy, production forecasting, and account-security ML on AWS SageMaker.</p>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <h3>Datametica Solutions</h3>
+          <span class="tl-role">Senior Data Scientist</span>
+          <span class="tl-date">Aug 2018 — Feb 2020</span>
+        </div>
+        <p>NLP classification pipeline for rumor detection on financial news, 76–80% accuracy.</p>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <h3>Development Bank of Singapore</h3>
+          <span class="tl-role">Lead Engineer, Data Science</span>
+          <span class="tl-date">Jul 2016 — Aug 2018</span>
+        </div>
+        <p>Word-embedding trade-document matching, credit-risk scoring, and fraud-pattern detection across APAC transaction data.</p>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <h3>Inside View Technologies</h3>
+          <span class="tl-role">Data Analyst</span>
+          <span class="tl-date">Mar 2015 — Jul 2016</span>
+        </div>
+        <p>NLP systems for company-news similarity and entity extraction, now part of Demandbase.</p>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <h3>HDFC Bank</h3>
+          <span class="tl-role">Deputy Manager, Business Intelligence</span>
+          <span class="tl-date">Nov 2014 — Mar 2015</span>
+        </div>
+        <p>ARIMA-based ATM cash-demand forecasting for Chennai regions.</p>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <h3>Aaum Research &amp; Analytics (IIT Madras)</h3>
+          <span class="tl-role">Data Scientist</span>
+          <span class="tl-date">Mar 2014 — Nov 2014</span>
+        </div>
+        <p>Marketing mix models and collaborative-filtering recommendation engines.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- EXPLORING -->
+  <section id="exploring">
+    <div class="section-head">
+      <h2>Currently exploring</h2>
+      <p>Self-directed — outside of work, going deep on the GenAI ecosystem.</p>
+    </div>
+    <div class="chip-row">
+      <span class="chip">LangChain</span>
+      <span class="chip">LlamaIndex</span>
+      <span class="chip">FAISS</span>
+      <span class="chip">Pinecone</span>
+      <span class="chip">PEFT / LoRA</span>
+      <span class="chip">Prompt Engineering</span>
+      <span class="chip">Llama 3</span>
+      <span class="chip">Mistral</span>
+    </div>
+    <p class="exploring-note">Learning, not shipped — happy to talk through what I've built with these, just labeling it honestly.</p>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-head">
+      <h2>Skills</h2>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <h4>Programming</h4>
+        <p>Python, R, SQL, Shell</p>
+      </div>
+      <div class="skill-group">
+        <h4>Deep Learning</h4>
+        <p>PyTorch, TensorFlow, Keras, ANN, RNN, LSTM</p>
+      </div>
+      <div class="skill-group">
+        <h4>Big Data &amp; Ops</h4>
+        <p>Apache Spark (PySpark), Hive, AWS SageMaker, S3, Lambda</p>
+      </div>
+      <div class="skill-group">
+        <h4>Statistics</h4>
+        <p>Multivariate Regression, ANOVA, Hypothesis Testing, Time-Series Forecasting</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h2>Let's talk.</h2>
+        <p>Hyderabad, India — open to conversations on applied ML, graph learning, and causal inference.</p>
+      </div>
+      <div class="footer-links">
+        <a href="mailto:dipanshuhaldar@gmail.com">dipanshuhaldar@gmail.com</a>
+        <a href="https://linkedin.com/in/dipanshu-haldar-5639885b" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/dipanshuhaldar" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Dipanshu Haldar</span>
+      <span>Built and deployed by hand.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Career graph: nodes = actual roles, sized by tenure, connected chronologically.
+(function(){
+  const canvas = document.getElementById('careerGraph');
+  const ctx = canvas.getContext('2d');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const roles = [
+    {label:'Aaum',        months:8,  current:false},
+    {label:'HDFC',        months:4,  current:false},
+    {label:'Inside View', months:16, current:false},
+    {label:'DBS',         months:25, current:false},
+    {label:'Datametica',  months:18, current:false},
+    {label:'EA',          months:75, current:true},
+  ];
+
+  let W, H, nodes;
+
+  function layout(){
+    const rect = canvas.parentElement.getBoundingClientRect();
+    W = canvas.width = rect.width * devicePixelRatio;
+    H = canvas.height = rect.height * devicePixelRatio;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+
+    const cx = W/2, cy = H/2;
+    const radius = Math.min(W,H) * 0.32;
+    const maxMonths = Math.max(...roles.map(r=>r.months));
+
+    nodes = roles.map((r, i) => {
+      const angle = (i / roles.length) * Math.PI * 2 - Math.PI/2;
+      return {
+        ...r,
+        x: cx + Math.cos(angle) * radius,
+        y: cy + Math.sin(angle) * radius,
+        r: 6 + (r.months / maxMonths) * 16,
+        baseX: cx + Math.cos(angle) * radius,
+        baseY: cy + Math.sin(angle) * radius,
+        phase: Math.random() * Math.PI * 2,
+      };
+    });
+  }
+
+  function color(hex, alpha){
+    return hex + Math.round(alpha*255).toString(16).padStart(2,'0');
+  }
+
+  let t = 0;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    // edges (chronological path)
+    ctx.lineWidth = 1.4 * devicePixelRatio;
+    for(let i=0;i<nodes.length-1;i++){
+      const a = nodes[i], b = nodes[i+1];
+      const grad = ctx.createLinearGradient(a.x,a.y,b.x,b.y);
+      grad.addColorStop(0, color('#4FA8A0', 0.55));
+      grad.addColorStop(1, color('#4FA8A0', 0.15));
+      ctx.strokeStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(a.x,a.y);
+      ctx.lineTo(b.x,b.y);
+      ctx.stroke();
+    }
+
+    // nodes
+    nodes.forEach(n=>{
+      if(!reduceMotion){
+        n.x = n.baseX + Math.sin(t*0.0006 + n.phase) * 4 * devicePixelRatio;
+        n.y = n.baseY + Math.cos(t*0.0006 + n.phase) * 4 * devicePixelRatio;
+      }
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r * devicePixelRatio * 0.5, 0, Math.PI*2);
+      ctx.fillStyle = n.current ? '#D9A441' : '#1F5B57';
+      ctx.fill();
+      ctx.lineWidth = 1.5 * devicePixelRatio;
+      ctx.strokeStyle = n.current ? '#D9A441' : '#4FA8A0';
+      ctx.stroke();
+
+      ctx.font = `${11*devicePixelRatio}px 'JetBrains Mono', monospace`;
+      ctx.fillStyle = n.current ? '#D9A441' : '#9AA0AC';
+      ctx.textAlign = 'center';
+      ctx.fillText(n.label, n.x, n.y + n.r*devicePixelRatio*0.5 + 16*devicePixelRatio);
+    });
+
+    t += 16;
+    if(!reduceMotion) requestAnimationFrame(draw);
+  }
+
+  layout();
+  draw();
+  window.addEventListener('resize', () => { layout(); if(reduceMotion) draw(); });
+})();
+</script>
+
+</body>
+</html>
