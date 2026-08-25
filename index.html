@@ -87,10 +87,10 @@
   @media (max-width:900px){ .hero{grid-template-columns:1fr; padding:56px 0 40px;} }
 
   .profile-photo{
-    width:64px; height:64px; border-radius:50%;
+    width:96px; height:96px; border-radius:50%;
     object-fit:cover;
-    border:1px solid var(--line);
-    margin-bottom:18px;
+    border:2px solid var(--line);
+    margin-bottom:20px;
     display:block;
   }
 
@@ -470,7 +470,9 @@
     nodes = roles.map((r, i) => {
       const angle = (i / roles.length) * Math.PI * 2 - Math.PI/2;
       return {
-        ...r,
+        role: r,
+        label: r.label,
+        current: r.current,
         x: cx + Math.cos(angle) * radius,
         y: cy + Math.sin(angle) * radius,
         r: 6 + (r.months / maxMonths) * 16,
@@ -511,7 +513,7 @@
       }
       const nodeRadius = n.r * devicePixelRatio * 0.5;
 
-      if(n.imgOk && n.img){
+      if(n.role.imgOk && n.role.img){
         // clip to circle, draw logo, then ring
         ctx.save();
         ctx.beginPath();
@@ -520,7 +522,7 @@
         ctx.clip();
         ctx.fillStyle = '#ECE8DE';
         ctx.fill();
-        ctx.drawImage(n.img, n.x - nodeRadius, n.y - nodeRadius, nodeRadius*2, nodeRadius*2);
+        ctx.drawImage(n.role.img, n.x - nodeRadius, n.y - nodeRadius, nodeRadius*2, nodeRadius*2);
         ctx.restore();
 
         ctx.beginPath();
